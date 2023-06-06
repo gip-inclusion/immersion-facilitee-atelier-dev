@@ -37,77 +37,11 @@
 
     // Début du jeu :)
 
-    // Notre valeur à trouver
-    const motMystere = "inconnu";
-    const nombreErreursMaximum = 5;
-    const lettresUtilisees = [];
-
-    function verificationVictoireOuDefaite(motMasqué) {
-      let rechargerLaPage = false;
-      if(miseAJourMotMasqué() === motMystere) {
-        rechargerLaPage = confirm("Vous avez gagné ! Voulez-vous rejouer ?");
-      }
-      if(miseAJourNombreErreurs() >= nombreErreursMaximum) {
-        rechargerLaPage = confirm("Vous avez perdu ! Voulez-vous rejouer ?");
-      }
-      if(rechargerLaPage){
-        window.location.reload();
-      }
-    }
-
-    function miseAJourMotMasqué() {
-      let motMasqué = "";
-      let index = 0;
-      
-      while(motMystere[index] !== undefined) {
-        const lettreCourante = motMystere[index]
-        
-        let lettreAAfficher = "";
-        if(lettresUtilisees.includes(lettreCourante)) {
-          lettreAAfficher = lettreCourante
-        } else {
-          lettreAAfficher = "*";
-        }
-        // aussi possible : while(index < motMystere.length) {
-        motMasqué = motMasqué + lettreAAfficher;
-        index = index + 1;
-      }
-      console.log("mot masqué : ", motMasqué)
-      console.log("longueur : ", motMystere.length)
-      motMystereElement.innerHTML = motMasqué;
-      return motMasqué;
-    }
-
-    function miseAJourNombreErreurs() {
-      let index = 0;
-      let nombreErreurs = 0;
-      while(lettresUtilisees[index] !== undefined) {
-        const lettreCourante = lettresUtilisees[index];
-        if(motMystere.includes(lettreCourante) === false) {
-          nombreErreurs = nombreErreurs + 1;
-        }
-        index = index + 1;
-      }
-      nombreErreursElement.innerHTML = "Nombre d'erreurs : "+nombreErreurs;
-      if(nombreErreurs === nombreErreursMaximum - 1) {
-        nombreErreursElement.innerHTML += " - Attention, dernier essai !"
-      }
-      return nombreErreurs;
-    }
-
     function initialisationDuFormulaire() {
       formulaireElement.addEventListener("submit", function(evenement) {
         // On empêche le comportement par défaut du formulaire
         evenement.preventDefault();
-        // On récupère la valeur de la lettre
-        const lettreUtilisateur = lettreInput.value;
-        // On vide le champ de saisie
-        lettreInput.value = "";
-        // On alimente le tableau des lettres utilisées        
-        lettresUtilisees.push(lettreUtilisateur);
-        // On met à jour l'affichage des lettres utilisées
-        lettresUtiliseesElement.innerHTML += "<li>"+lettreUtilisateur+"</li>";
-        verificationVictoireOuDefaite();
+        console.log("formulaire soumis");
       }); 
     }
     
@@ -115,7 +49,7 @@
       // On écoute l'événement submit du formulaire
       initialisationDuFormulaire();
       // On masque les lettres du mot mystère et on l'affiche dans le bon élément
-      miseAJourMotMasqué();
+      // ???
     }
 
     // On lance l'initialisation de notre jeu
