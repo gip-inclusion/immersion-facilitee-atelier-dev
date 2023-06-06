@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pendu IF</title>
+</head>
+<body>
+  
+  <h1>Pendu IF</h1>
+  <main>
+    <div id="mot-mystere">
+    
+    </div>
+  
+    <form id="formulaire">
+      <input type="text" required name="lettre" id="lettre" maxlength="1">
+      <button type="submit" >Essayer cette lettre</button>
+    </form>
+    
+    <ul id="lettres-utilisees">
+      <!-- <li>Aucune lettres pour l'instant</li> -->
+    </ul>
+    <p id="nombre-erreurs">
+      <!-- Aucune erreur pour l'instant -->
+    </p>
+  </main>
+
+  <script>
+    // Nos variables contenant les éléments du DOM
+    const motMystereElement = document.getElementById("mot-mystere");
+    const formulaireElement = document.getElementById("formulaire");
+    const lettreInput = document.getElementById("lettre");
+    const nombreErreursElement = document.getElementById("nombre-erreurs");
+    const lettresUtiliseesElement = document.getElementById("lettres-utilisees");
+
+    // Début du jeu :)
+
+    // Notre valeur à trouver
+    const motMystere = "inconnu";
+    const nombreErreursMaximum = 5;
+    const lettresUtilisees = [];
+
+    function verificationVictoireOuDefaite(motMasqué) {
+      let rechargerLaPage = false;
+      if(miseAJourMotMasqué() === motMystere) {
+        rechargerLaPage = confirm("Vous avez gagné ! Voulez-vous rejouer ?");
+      }
+      if(miseAJourNombreErreurs() >= nombreErreursMaximum) {
+        rechargerLaPage = confirm("Vous avez perdu ! Voulez-vous rejouer ?");
+      }
+      if(rechargerLaPage){
+        window.location.reload();
+      }
+    }
+
+    function miseAJourMotMasqué() {
+      let motMasqué = "";
+      let index = 0;
+      
+      while(motMystere[index] !== undefined) {
+        const lettreCourante = motMystere[index]
+        
+        let lettreAAfficher = "";
+        if(lettresUtilisees.includes(lettreCourante)) {
+          lettreAAfficher = lettreCourante
+        } else {
+          lettreAAfficher = "*";
+        }
+        // aussi possible : while(index < motMystere.length) {
+        motMasqué = motMasqué + lettreAAfficher;
+        index = index + 1;
+      }
+      console.log("mot masqué : ", motMasqué)
+      console.log("longueur : ", motMystere.length)
+      motMystereElement.innerHTML = motMasqué;
+      return motMasqué;
+    }
+
+    function miseAJourNombreErreurs() {
+      let index = 0;
+      let nombreErreurs = 0;
+      while(lettresUtilisees[index] !== undefined) {
+        const lettreCourante = lettresUtilisees[index];
+        if(motMystere.includes(lettreCourante) === false) {
+          nombreErreurs = nombreErreurs + 1;
+        }
+        index = index + 1;
+      }
+      nombreErreursElement.innerHTML = "Nombre d'erreurs : "+nombreErreurs;
+      if(nombreErreurs === nombreErreursMaximum - 1) {
+        nombreErreursElement.innerHTML += " - Attention, dernier essai !"
+      }
+      return nombreErreurs;
+    }
+
+    function initialisationDuFormulaire() {
+      formulaireElement.addEventListener("submit", function(evenement) {
+        // On empêche le comportement par défaut du formulaire
+        evenement.preventDefault();
+        // On récupère la valeur de la lettre
+        const lettreUtilisateur = lettreInput.value;
+        // On vide le champ de saisie
+        lettreInput.value = "";
+        // On alimente le tableau des lettres utilisées        
+        lettresUtilisees.push(lettreUtilisateur);
+        // On met à jour l'affichage des lettres utilisées
+        lettresUtiliseesElement.innerHTML += "<li>"+lettreUtilisateur+"</li>";
+        verificationVictoireOuDefaite();
+      }); 
+    }
+    
+    function initialisation() {      
+      // On écoute l'événement submit du formulaire
+      initialisationDuFormulaire();
+      // On masque les lettres du mot mystère et on l'affiche dans le bon élément
+      miseAJourMotMasqué();
+    }
+
+    // On lance l'initialisation de notre jeu
+    initialisation();
+
+    // A faire
+    // nombre d'essai limité
+
+    // Bonus
+    // gérer majuscules / minuscules
+    // bloquer les caractères spéciaux / nombres
+    // pimp CSS
+    // afficher les bonnes / mauvaises lettres
+    // gérer les duplications de lettres
+  </script>
+</body>
+</html>
